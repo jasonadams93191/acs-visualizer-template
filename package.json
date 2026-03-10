@@ -1,0 +1,10 @@
+{
+  "name": "acs-visualizer-template",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ACS Visualizer Template - Reusable framework for branded interactive business tools",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node build.js && start dist/index.html"
+  }
+}

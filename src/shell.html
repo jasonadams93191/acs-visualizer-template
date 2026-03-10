@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{PROJECT}} - Advocate Cloud Solutions</title>
+<style>
+{{CSS}}
+</style>
+</head>
+<body>
+
+<!-- Login Gate -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo"><img src="{{LOGO_DATA_URI}}" alt="ACS"></div>
+    <h2>{{PROJECT}}</h2>
+    <div class="login-sub">{{CLIENT}} &mdash; Sign in to continue</div>
+    <div class="login-field">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label for="loginPass">Password</label>
+      <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
+    </div>
+    <button class="login-btn" id="loginBtn">Sign In</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- App Shell -->
+<header class="acs-header">
+  <img class="logo" src="{{LOGO_DATA_URI}}" alt="ACS">
+  <div class="title-group">
+    <div class="title">{{PROJECT}}</div>
+    <div class="subtitle">Advocate Cloud Solutions &mdash; Supercharging Legal Efficiency</div>
+    <div class="stats" id="headerStats"></div>
+  </div>
+  <span class="user-badge" id="userBadge"></span>
+  <button class="logout-btn" onclick="ACS_AUTH.logout()">Sign Out</button>
+</header>
+
+{{TAB_BAR}}
+
+{{TOOLBAR}}
+
+<main id="appMain">
+{{PANELS}}
+</main>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal"></div>
+</div>
+
+<!-- Save Bar -->
+<div class="save-bar">
+  <div class="save-status">All changes saved</div>
+  <button class="btn save-btn" disabled>Save</button>
+</div>
+
+<script>
+var CONFIG = {{CONFIG_JSON}};
+var DATA = {{DATA_JSON}};
+</script>
+<script>
+{{AUTH_JS}}
+</script>
+<script>
+{{CORE_JS}}
+</script>
+<script>
+{{LAYOUT_JS}}
+</script>
+<script>
+// Boot
+document.addEventListener('DOMContentLoaded', function() {
+  if (ACS_AUTH.init()) {
+    onAuthReady();
+  }
+});
+function onAuthReady() {
+  ACS.init();
+  if (typeof LAYOUT !== 'undefined' && LAYOUT.init) {
+    LAYOUT.init(DATA, CONFIG);
+  }
+}
+</script>
+</body>
+</html>

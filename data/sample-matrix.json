@@ -1,0 +1,29 @@
+{
+  "title": "Vendor Capabilities Comparison",
+  "description": "Compare vendor service offerings across key capability areas.",
+  "rowHeader": "Capability",
+  "categories": ["Document Services", "Court Services", "Investigation", "Medical"],
+  "legend": [
+    { "symbol": "✓", "label": "Full Support" },
+    { "symbol": "✗", "label": "Not Available" },
+    { "symbol": "●", "label": "Partial/Limited" }
+  ],
+  "columns": [
+    { "label": "JEC", "key": "jec", "tooltip": "JEC Business Services" },
+    { "label": "Choice Legal", "key": "choice", "tooltip": "Choice Legal Services" },
+    { "label": "Ontellus", "key": "ontellus", "tooltip": "Ontellus Records" },
+    { "label": "Lexitas", "key": "lexitas", "tooltip": "Lexitas Legal" }
+  ],
+  "rows": [
+    { "name": "Document Retrieval", "category": "Document Services", "key": "doc-retrieval", "values": { "jec": true, "choice": true, "ontellus": true, "lexitas": "partial" } },
+    { "name": "Document Review", "category": "Document Services", "key": "doc-review", "values": { "jec": true, "choice": false, "ontellus": true, "lexitas": true } },
+    { "name": "E-Filing", "category": "Court Services", "key": "efiling", "values": { "jec": true, "choice": true, "ontellus": false, "lexitas": true } },
+    { "name": "Process Serving", "category": "Court Services", "key": "process", "values": { "jec": true, "choice": true, "ontellus": false, "lexitas": false } },
+    { "name": "Court Reporting", "category": "Court Services", "key": "court-report", "values": { "jec": false, "choice": false, "ontellus": false, "lexitas": true } },
+    { "name": "Surveillance", "category": "Investigation", "key": "surveillance", "values": { "jec": false, "choice": true, "ontellus": false, "lexitas": false } },
+    { "name": "Background Checks", "category": "Investigation", "key": "bg-check", "values": { "jec": "partial", "choice": true, "ontellus": false, "lexitas": false } },
+    { "name": "Medical Records", "category": "Medical", "key": "med-records", "values": { "jec": false, "choice": false, "ontellus": true, "lexitas": "partial" } },
+    { "name": "Medical Billing", "category": "Medical", "key": "med-billing", "values": { "jec": false, "choice": false, "ontellus": true, "lexitas": false } },
+    { "name": "IME Scheduling", "category": "Medical", "key": "ime", "values": { "jec": false, "choice": "partial", "ontellus": true, "lexitas": true } }
+  ]
+}

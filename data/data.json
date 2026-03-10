@@ -1,0 +1,75 @@
+{
+  "tabs": [
+    {
+      "name": "Overview",
+      "type": "instructions",
+      "sections": [
+        {
+          "title": "Welcome",
+          "content": "This is a sample ACS Visualizer. Edit <code>data/data.json</code> and <code>visualizer.config.js</code> to customize it for your project."
+        },
+        {
+          "title": "How to Use",
+          "content": "Navigate between tabs to view different data. Use the search bar to filter items. Click cards to expand details. Export data using the CSV/JSON buttons."
+        }
+      ]
+    },
+    {
+      "name": "Details",
+      "type": "cards",
+      "items": [
+        {
+          "title": "Profile Alpha",
+          "subtitle": "Category A",
+          "accentColor": "#3b82f6",
+          "fields": [
+            { "label": "Platform", "value": "Cloud-Based" },
+            { "label": "Description", "type": "textarea", "value": "This is a sample profile card with editable fields." }
+          ],
+          "lists": [
+            { "label": "Key Features", "values": ["Feature One", "Feature Two", "Feature Three"] },
+            { "label": "Notes", "values": ["Important note here"] }
+          ]
+        },
+        {
+          "title": "Profile Beta",
+          "subtitle": "Category B",
+          "accentColor": "#22c55e",
+          "fields": [
+            { "label": "Platform", "value": "On-Premise" },
+            { "label": "Rates", "type": "grid", "columns": 3, "items": [
+              { "label": "Tier 1", "value": "$150/hr" },
+              { "label": "Tier 2", "value": "$125/hr" },
+              { "label": "Tier 3", "value": "$100/hr" }
+            ]}
+          ],
+          "lists": [
+            { "label": "Requirements", "values": ["Requirement A", "Requirement B"] }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Summary",
+      "type": "table",
+      "columns": [
+        { "key": "name", "label": "Name" },
+        { "key": "category", "label": "Category", "type": "tag", "tagMap": { "Active": "tag-green", "Pending": "tag-orange", "Inactive": "tag-red" } },
+        { "key": "value", "label": "Value" },
+        { "key": "status", "label": "Status", "type": "select", "options": ["Active", "Pending", "Inactive"] }
+      ],
+      "filters": [
+        { "label": "All", "value": "" },
+        { "label": "Active Only", "value": "active" },
+        { "label": "Pending Only", "value": "pending" }
+      ],
+      "items": [
+        { "name": "Item One", "category": "Active", "value": "$1,200", "status": "Active" },
+        { "name": "Item Two", "category": "Pending", "value": "$850", "status": "Pending" },
+        { "name": "Item Three", "category": "Active", "value": "$2,100", "status": "Active" },
+        { "name": "Item Four", "category": "Inactive", "value": "$0", "status": "Inactive" },
+        { "name": "Item Five", "category": "Active", "value": "$3,400", "status": "Active" }
+      ]
+    }
+  ]
+}

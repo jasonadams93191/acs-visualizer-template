@@ -1,0 +1,60 @@
+{
+  "stats": { "matters": 586, "clients": 48, "profiles": 23 },
+  "kpis": [
+    { "value": "586", "label": "Total Matters", "color": "#0D3B6E" },
+    { "value": "507", "label": "Assigned", "color": "#27ae60", "trend": { "direction": "up", "text": "+12 this week" } },
+    { "value": "79", "label": "Unassigned", "color": "#ff6b6b", "trend": { "direction": "down", "text": "-8 this week" } },
+    { "value": "86%", "label": "Coverage", "color": "#1956A6", "trend": { "direction": "up", "text": "+3% vs last month" } }
+  ],
+  "charts": [
+    {
+      "title": "Matters by Carrier",
+      "type": "bar",
+      "data": [
+        { "label": "Hanover", "value": 89, "color": "#f39c12" },
+        { "label": "AIG", "value": 72, "color": "#3498db" },
+        { "label": "Nationwide", "value": 65, "color": "#34495e" },
+        { "label": "CNA", "value": 58, "color": "#2ecc71" },
+        { "label": "Chubb", "value": 44, "color": "#1abc9c" },
+        { "label": "Other", "value": 179, "color": "#95a5a6" }
+      ]
+    },
+    {
+      "title": "Assignment Source",
+      "type": "donut",
+      "data": [
+        { "label": "Matter-Level", "value": 312, "color": "#3b82f6" },
+        { "label": "Account Default", "value": 195, "color": "#6366f1" },
+        { "label": "Override", "value": 45, "color": "#f39c12" },
+        { "label": "Unassigned", "value": 34, "color": "#ef4444" }
+      ]
+    },
+    {
+      "title": "Client Completion",
+      "type": "progress",
+      "data": [
+        { "label": "AIG", "value": 100 },
+        { "label": "Hanover", "value": 95 },
+        { "label": "Nationwide", "value": 88 },
+        { "label": "CNA", "value": 72 },
+        { "label": "Unassigned Clients", "value": 34 }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "title": "Recent Activity",
+      "columns": [
+        { "key": "date", "label": "Date" },
+        { "key": "action", "label": "Action" },
+        { "key": "user", "label": "User" },
+        { "key": "detail", "label": "Detail" }
+      ],
+      "rows": [
+        { "date": "2026-03-10", "action": "Override Set", "user": "dra@firm.com", "detail": "Matter #10105 → Hanover" },
+        { "date": "2026-03-09", "action": "Default Set", "user": "bms@firm.com", "detail": "Client AIG → AIG Profile" },
+        { "date": "2026-03-08", "action": "Profile Updated", "user": "jason@acs.com", "detail": "Chubb rates updated" }
+      ]
+    }
+  ]
+}
