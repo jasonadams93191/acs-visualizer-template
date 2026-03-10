@@ -19,8 +19,7 @@ module.exports = {
 
   // ── Authentication ──
   credentials: [
-    { email: "demo@example.com",                    pass: "Demo2026!" },
-    { email: "jason@advocatecloudsolutions.com",    pass: "ACS2026!" }
+    // { email: "user@example.com", pass: "password" }
   ],
 
   // ── Deployment ──

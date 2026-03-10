@@ -4,6 +4,12 @@ var ACS_AUTH = (function() {
   var currentUser = null;
 
   function init() {
+    // Skip login gate if no credentials configured
+    if (!CONFIG.credentials || CONFIG.credentials.length === 0) {
+      currentUser = { email: 'public', loggedIn: new Date().toISOString() };
+      hideLogin();
+      return true;
+    }
     var saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
