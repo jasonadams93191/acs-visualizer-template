@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EvenUp vs. Litify AI vs. Noca.ai – Competitive Analysis</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #FAFAF8; font-family: Georgia, "Times New Roman", serif; color: #1C1917; }
+    button:focus { outline: none; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const data = {
+      platforms: [
+        {
+          id: "evenup",
+          name: "EvenUp",
+          tagline: "Prebuilt SaaS – Take It or Leave It",
+          color: "#E8572A",
+          status: "Current Vendor",
+          statusType: "warning",
+          description: "A fixed product built for the average PI firm. You get what they ship – no customization, no Salesforce integration, no control over the roadmap.",
+          strengths: [
+            "Ready to use immediately – no build required",
+            "Best-in-class demand narrative out of the box",
+            "AI trained on hundreds of thousands of PI demands",
+          ],
+          weaknesses: [
+            "No customization – one-size-fits-all output",
+            "No Litify/Salesforce integration – permanent data silo",
+            "Per-demand pricing becomes painful at volume",
+            "You own nothing – vendor controls the roadmap",
+            "Slow to adapt to your firm's specific workflows",
+          ],
+        },
+        {
+          id: "litify",
+          name: "Litify AI",
+          tagline: "Prebuilt AI Features Within Salesforce",
+          color: "#0070D2",
+          status: "Core Platform",
+          statusType: "primary",
+          description: "Litify AI ships specific prebuilt AI features – medical chronology, treatment timelines, and case management – but demand generation and valuation remain gaps. You can extend it, but the AI layer itself is fixed.",
+          strengths: [
+            "Medical record parsing & chronology – prebuilt",
+            "Treatment timeline visualization – prebuilt",
+            "Native Salesforce data – no silo",
+            "Workflow automation via Flow and Apex",
+          ],
+          weaknesses: [
+            "No AI demand package generation",
+            "No case valuation or damages modeling",
+            "AI features are fixed – limited customization",
+            "Dependent on Litify's product roadmap for new AI capabilities",
+          ],
+        },
+        {
+          id: "noca",
+          name: "Noca.ai Custom Build",
+          tagline: "Build What You Need, Faster Than Anyone Else",
+          color: "#7C3AED",
+          status: "✦ Recommended",
+          statusType: "success",
+          description: "Noca.ai provides the AI document intelligence engine. We build the PI-specific workflows on top – demand generation, lien analysis, medical summaries – tailored exactly to each client's Litify instance. Faster to deploy than a vendor product, and fully owned by the client.",
+          strengths: [
+            "Customizable to each firm's exact workflows and templates",
+            "Faster iteration – we ship changes in days, not quarters",
+            "Medical record summarization – ready now",
+            "Open API integrates directly into Litify – no data silo",
+            "Client owns the output – not locked into vendor pricing",
+            "Can replicate and extend EvenUp capabilities on our timeline",
+          ],
+          weaknesses: [
+            "Requires build effort – not zero-day ready",
+            "Medical record depth for PI needs validation in pilot",
+            "No prebuilt demand narrative – we construct it",
+          ],
+        },
+      ],
+      features: [
+        {
+          category: "Demand Generation",
+          items: [
+            { name: "AI Demand Package Generation", evenup: true, litify: false, noca: "build", severity: "Critical" },
+            { name: "Narrative Generation (LLM)", evenup: true, litify: false, noca: "build", severity: "High" },
+            { name: "Demand Package PDF Assembly", evenup: true, litify: false, noca: "build", severity: "High" },
+            { name: "Customizable Demand Templates per Client", evenup: false, litify: false, noca: true, severity: null },
+          ],
+        },
+        {
+          category: "Medical Intelligence",
+          items: [
+            { name: "Medical Record Parsing & Chronology", evenup: true, litify: true, noca: "build", severity: null },
+            { name: "Treatment Timeline Visualization", evenup: true, litify: true, noca: "build", severity: null },
+            { name: "Medical Provider Identification", evenup: true, litify: false, noca: "build", severity: "Medium" },
+            { name: "Lien Analysis (Medicare / Medicaid)", evenup: false, litify: false, noca: "build", severity: null },
+          ],
+        },
+        {
+          category: "Valuation & Strategy",
+          items: [
+            { name: "Case Valuation / Damages Estimation", evenup: true, litify: false, noca: "build", severity: "High" },
+            { name: "Insurance Limit Awareness", evenup: true, litify: false, noca: "build", severity: "Medium" },
+            { name: "Comparable Case Benchmarking", evenup: false, litify: false, noca: "build", severity: "High" },
+          ],
+        },
+        {
+          category: "Customization & Control",
+          items: [
+            { name: "Firm-Specific Workflow Configuration", evenup: false, litify: false, noca: true, severity: null },
+            { name: "Custom Output Templates", evenup: false, litify: false, noca: true, severity: null },
+            { name: "Client Owns the AI Asset", evenup: false, litify: false, noca: true, severity: null },
+            { name: "Iterate & Ship New Features in Days", evenup: false, litify: false, noca: true, severity: null },
+          ],
+        },
+        {
+          category: "Integration & Data",
+          items: [
+            { name: "Native Litify / Salesforce Integration", evenup: false, litify: true, noca: true, severity: "Critical" },
+            { name: "Full Audit Trail in Salesforce", evenup: false, litify: true, noca: true, severity: null },
+            { name: "Workflow Automation (Flow / Apex)", evenup: false, litify: true, noca: true, severity: null },
+            { name: "No Per-Demand Pricing at Scale", evenup: false, litify: true, noca: true, severity: null },
+          ],
+        },
+      ],
+      speed: [
+        { capability: "Initial Setup", evenup: "Days", litify: "Weeks", noca: "2–4 Weeks", nocaWins: false },
+        { capability: "New Feature / Change Request", evenup: "Vendor Roadmap (Months)", litify: "Vendor Roadmap (Months)", noca: "Days to Weeks", nocaWins: true },
+        { capability: "Client-Specific Customization", evenup: "Not Possible", litify: "Limited", noca: "Fully Custom", nocaWins: true },
+        { capability: "Medical Record Summarization", evenup: "Not Available", litify: "Not Available", noca: "Ready Now", nocaWins: true },
+        { capability: "Lien Analysis Workflow", evenup: "Not Available", litify: "Not Available", noca: "Requires Build", nocaWins: false },
+        { capability: "Demand Template Changes", evenup: "Not Possible", litify: "Not Possible", noca: "On Demand", nocaWins: true },
+        { capability: "Integration with Litify Data", evenup: "Not Possible", litify: "Native", noca: "Via API Build", nocaWins: false },
+      ],
+      risks: [
+        { vendor: "EvenUp", risk: "No Litify connector – permanent data silo", severity: "Critical" },
+        { vendor: "EvenUp", risk: "Per-demand pricing scales poorly at volume", severity: "High" },
+        { vendor: "EvenUp", risk: "Data lock-in – demand history not portable", severity: "High" },
+        { vendor: "EvenUp", risk: "No customization – firm must adapt to the tool", severity: "High" },
+        { vendor: "Litify AI", risk: "No AI demand generation – gap remains", severity: "High" },
+        { vendor: "Litify AI", risk: "New AI features dependent on Litify roadmap", severity: "Medium" },
+        { vendor: "Noca.ai", risk: "PI-specific medical record depth needs pilot validation", severity: "Medium" },
+        { vendor: "Noca.ai", risk: "Early-stage company – assess long-term viability", severity: "Medium" },
+      ],
+      roadmap: [
+        {
+          phase: "0–60 days", label: "Pilot", color: "#7C3AED",
+          items: [
+            "Pilot Noca.ai on 10–15 real PI matters – lien analysis and document review",
+            "Assess Noca.ai API for Litify/Salesforce integration feasibility",
+            "Define client-specific demand template requirements",
+          ],
+        },
+        {
+          phase: "60–120 days", label: "Build & Integrate", color: "#0070D2",
+          items: [
+            "Build Noca.ai – Litify connector – documents in, results back into Salesforce",
+            "Ship v1 lien analysis workflow – run in parallel with current manual process",
+            "Begin demand narrative build on Noca.ai engine",
+          ],
+        },
+        {
+          phase: "120–180 days", label: "Expand & Replace", color: "#059669",
+          items: [
+            "Expand to medical record summarization and chronology",
+            "Validate demand narrative quality vs. EvenUp bar",
+            "Build business case to reduce or eliminate EvenUp dependency",
+          ],
+        },
+      ],
+    };
+
+    const severityColors = {
+      Critical: { bg: "#FEF2F2", text: "#DC2626", border: "#FECACA" },
+      High: { bg: "#FFF7ED", text: "#C2410C", border: "#FED7AA" },
+      Medium: { bg: "#FFFBEB", text: "#92400E", border: "#FDE68A" },
+    };
+
+    const renderCell = (val) => {
+      if (val === true) return <span style={{ fontSize: 16, color: "#059669", fontWeight: 700 }}>✓</span>;
+      if (val === false) return <span style={{ fontSize: 16, color: "#D1D5DB", fontWeight: 700 }}>✗</span>;
+      if (val === "build") return <span style={{ fontSize: 12, color: "#7C3AED", fontWeight: 700, fontFamily: "monospace", background: "#F5F3FF", padding: "2px 7px", borderRadius: 3, border: "1px solid #DDD6FE" }}>BUILD</span>;
+      return null;
+    };
+
+    function App() {
+      const [activeTab, setActiveTab] = useState("overview");
+      const [expandedCategory, setExpandedCategory] = useState(null);
+
+      const tabs = [
+        { id: "overview", label: "Platform Overview" },
+        { id: "features", label: "Feature Matrix" },
+        { id: "speed", label: "Speed to Value" },
+        { id: "risks", label: "Risk Register" },
+        { id: "roadmap", label: "Roadmap" },
+      ];
+
+      return (
+        <div style={{ fontFamily: "Georgia, 'Times New Roman', serif", background: "#FAFAF8", minHeight: "100vh", color: "#1C1917" }}>
+          <div style={{ background: "#1C1917", padding: "28px 32px 22px", borderBottom: "3px solid #7C3AED" }}>
+            <div style={{ maxWidth: 920, margin: "0 auto" }}>
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+                <div>
+                  <div style={{ fontSize: 10, letterSpacing: "0.15em", color: "#9CA3AF", textTransform: "uppercase", marginBottom: 6, fontFamily: "monospace" }}>
+                    Competitive Analysis · Personal Injury Legal AI · March 10, 2026
+                  </div>
+                  <h1 style={{ margin: 0, fontSize: 26, fontWeight: 700, color: "#FAFAF8", lineHeight: 1.2 }}>
+                    EvenUp vs. Litify AI vs. Noca.ai Custom Build
+                  </h1>
+                  <p style={{ margin: "6px 0 0", fontSize: 14, color: "#9CA3AF", fontStyle: "italic" }}>
+                    Prebuilt Products vs. What We Can Build – Faster
+                  </p>
+                </div>
+                <div style={{ background: "#7C3AED", color: "#fff", padding: "8px 16px", borderRadius: 6, fontSize: 12, fontFamily: "monospace", alignSelf: "center" }}>
+                  ✦ Recommended: Noca.ai Custom Build
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style={{ background: "#F5F3FF", borderBottom: "1px solid #DDD6FE", padding: "12px 32px" }}>
+            <div style={{ maxWidth: 920, margin: "0 auto", fontSize: 13, color: "#5B21B6", lineHeight: 1.6 }}>
+              <strong>The Core Argument:</strong> EvenUp and Litify AI ship fixed products on their own roadmap. With Noca.ai, we build exactly what each client needs – tailored to their Litify workflows, inside Salesforce, with no per-demand fees – and we can ship changes in <strong>days, not quarters</strong>.
+            </div>
+          </div>
+          <div style={{ background: "#fff", borderBottom: "1px solid #E5E7EB", padding: "0 32px", position: "sticky", top: 0, zIndex: 10 }}>
+            <div style={{ maxWidth: 920, margin: "0 auto", display: "flex" }}>
+              {tabs.map(tab => (
+                <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{
+                  padding: "12px 16px", border: "none", background: "none", cursor: "pointer",
+                  fontSize: 13, fontFamily: "Georgia, serif",
+                  color: activeTab === tab.id ? "#1C1917" : "#6B7280",
+                  borderBottom: activeTab === tab.id ? "2px solid #7C3AED" : "2px solid transparent",
+                  fontWeight: activeTab === tab.id ? 700 : 400,
+                  transition: "all 0.15s", marginBottom: -1,
+                }}>{tab.label}</button>
+              ))}
+            </div>
+          </div>
+          <div style={{ maxWidth: 920, margin: "0 auto", padding: "28px 32px 60px" }}>
+            {activeTab === "overview" && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                {data.platforms.map(p => (
+                  <div key={p.id} style={{ background: "#fff", border: `1px solid ${p.id === "noca" ? "#7C3AED" : "#E5E7EB"}`, borderLeft: `4px solid ${p.color}`, borderRadius: 8, padding: 22, boxShadow: p.id === "noca" ? "0 2px 12px rgba(124,58,237,0.1)" : "none" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                      <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: p.color }}>{p.name}</h3>
+                      <span style={{ fontSize: 10, padding: "3px 9px", borderRadius: 20, fontFamily: "monospace", background: p.id === "noca" ? "#F5F3FF" : p.statusType === "warning" ? "#FFF7ED" : "#EFF6FF", color: p.id === "noca" ? "#7C3AED" : p.statusType === "warning" ? "#C2410C" : "#1D4ED8" }}>{p.status}</span>
+                    </div>
+                    <div style={{ fontSize: 12, color: "#6B7280", marginBottom: 14, fontStyle: "italic" }}>{p.tagline}</div>
+                    <p style={{ margin: "0 0 16px", fontSize: 13, color: "#374151", lineHeight: 1.7, borderLeft: "3px solid #E5E7EB", paddingLeft: 14 }}>{p.description}</p>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                      <div>
+                        <div style={{ fontSize: 11, fontFamily: "monospace", letterSpacing: "0.08em", color: "#059669", marginBottom: 8, textTransform: "uppercase" }}>✓ Strengths</div>
+                        {p.strengths.map((s, i) => <div key={i} style={{ fontSize: 13, color: "#374151", lineHeight: 1.5, marginBottom: 5, paddingLeft: 12, borderLeft: "2px solid #D1FAE5" }}>{s}</div>)}
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 11, fontFamily: "monospace", letterSpacing: "0.08em", color: "#DC2626", marginBottom: 8, textTransform: "uppercase" }}>✗ Weaknesses</div>
+                        {p.weaknesses.map((w, i) => <div key={i} style={{ fontSize: 13, color: "#374151", lineHeight: 1.5, marginBottom: 5, paddingLeft: 12, borderLeft: "2px solid #FEE2E2" }}>{w}</div>)}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {activeTab === "features" && (
+              <div>
+                <table style={{ width: "100%", borderCollapse: "collapse", background: "#fff", borderRadius: 8, overflow: "hidden", border: "1px solid #E5E7EB", fontSize: 13 }}>
+                  <thead>
+                    <tr style={{ background: "#1C1917" }}>
+                      <th style={{ padding: "12px 18px", textAlign: "left", color: "#9CA3AF", fontWeight: 400, fontFamily: "monospace", fontSize: 10, letterSpacing: "0.1em", width: "42%" }}>CAPABILITY</th>
+                      {["EvenUp", "Litify AI", "Noca.ai Build"].map((h, i) => (
+                        <th key={h} style={{ padding: "12px 14px", textAlign: "center", color: ["#E8572A", "#60A5FA", "#A78BFA"][i], fontWeight: 700, fontSize: 12 }}>{h}</th>
+                      ))}
+                      <th style={{ padding: "12px 14px", color: "#9CA3AF", fontWeight: 400, fontFamily: "monospace", fontSize: 10 }}>GAP</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.features.map((cat, ci) => (
+                      <>
+                        <tr key={`cat-${ci}`} style={{ background: "#F9FAFB", cursor: "pointer" }} onClick={() => setExpandedCategory(expandedCategory === ci ? null : ci)}>
+                          <td colSpan={5} style={{ padding: "9px 18px", fontWeight: 700, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "#374151", fontFamily: "monospace" }}>
+                            {expandedCategory === ci ? "▾" : "▸"} {cat.category}
+                          </td>
+                        </tr>
+                        {(expandedCategory === null || expandedCategory === ci) && cat.items.map((item, ii) => (
+                          <tr key={`item-${ci}-${ii}`} style={{ borderTop: "1px solid #F3F4F6", background: ii % 2 === 0 ? "#fff" : "#FAFAFA" }}>
+                            <td style={{ padding: "10px 18px", color: "#374151" }}>{item.name}</td>
+                            {["evenup", "litify", "noca"].map(k => <td key={k} style={{ padding: "10px 14px", textAlign: "center" }}>{renderCell(item[k])}</td>)}
+                            <td style={{ padding: "10px 14px" }}>
+                              {item.severity ? (
+                                <span style={{ fontSize: 10, padding: "3px 7px", borderRadius: 4, fontFamily: "monospace", background: severityColors[item.severity]?.bg, color: severityColors[item.severity]?.text, border: `1px solid ${severityColors[item.severity]?.border}` }}>{item.severity}</span>
+                              ) : <span style={{ color: "#D1D5DB" }}>–</span>}
+                            </td>
+                          </tr>
+                        ))}
+                      </>
+                    ))}
+                  </tbody>
+                </table>
+                <div style={{ display: "flex", gap: 24, marginTop: 12, fontSize: 12, color: "#6B7280", fontFamily: "monospace", alignItems: "center", flexWrap: "wrap" }}>
+                  <span><span style={{ color: "#059669", fontWeight: 700 }}>✓</span> Available Now</span>
+                  <span><span style={{ color: "#7C3AED", fontWeight: 700 }}>BUILD</span> We Build It on Noca.ai</span>
+                  <span><span style={{ color: "#D1D5DB", fontWeight: 700 }}>✗</span> Not Available</span>
+                  <span style={{ marginLeft: "auto" }}>Click a category row to isolate</span>
+                </div>
+              </div>
+            )}
+            {activeTab === "speed" && (
+              <div>
+                <div style={{ marginBottom: 20, fontSize: 14, color: "#374151", lineHeight: 1.7, background: "#F5F3FF", border: "1px solid #DDD6FE", borderRadius: 8, padding: "14px 18px" }}>
+                  <strong style={{ color: "#5B21B6" }}>The customization advantage:</strong> When a client needs a new workflow, EvenUp and Litify AI are constrained by their vendor roadmap – changes take months. With a Noca.ai custom build, we control the codebase and can ship meaningful changes in days.
+                </div>
+                <table style={{ width: "100%", borderCollapse: "collapse", background: "#fff", borderRadius: 8, overflow: "hidden", border: "1px solid #E5E7EB", fontSize: 13 }}>
+                  <thead>
+                    <tr style={{ background: "#1C1917" }}>
+                      <th style={{ padding: "12px 18px", textAlign: "left", color: "#9CA3AF", fontWeight: 400, fontFamily: "monospace", fontSize: 10, letterSpacing: "0.1em", width: "28%" }}>SCENARIO</th>
+                      <th style={{ padding: "12px 14px", textAlign: "center", color: "#E8572A", fontWeight: 700, fontSize: 12 }}>EvenUp</th>
+                      <th style={{ padding: "12px 14px", textAlign: "center", color: "#60A5FA", fontWeight: 700, fontSize: 12 }}>Litify AI</th>
+                      <th style={{ padding: "12px 14px", textAlign: "center", color: "#A78BFA", fontWeight: 700, fontSize: 12 }}>Noca.ai Build</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.speed.map((row, i) => (
+                      <tr key={i} style={{ borderTop: "1px solid #F3F4F6", background: row.nocaWins ? "#FDFCFF" : (i % 2 === 0 ? "#fff" : "#FAFAFA") }}>
+                        <td style={{ padding: "12px 18px", color: "#374151", fontWeight: 600 }}>{row.capability}</td>
+                        <td style={{ padding: "12px 14px", textAlign: "center", fontSize: 12, color: "#9CA3AF" }}>{row.evenup}</td>
+                        <td style={{ padding: "12px 14px", textAlign: "center", fontSize: 12, color: "#9CA3AF" }}>{row.litify}</td>
+                        <td style={{ padding: "12px 14px", textAlign: "center" }}>
+                          <span style={{ fontSize: 12, fontWeight: 700, color: row.nocaWins ? "#7C3AED" : "#6B7280", background: row.nocaWins ? "#F5F3FF" : "transparent", padding: row.nocaWins ? "3px 10px" : "3px 0", borderRadius: 4, border: row.nocaWins ? "1px solid #DDD6FE" : "none" }}>{row.noca}</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            {activeTab === "risks" && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                {["Critical", "High", "Medium"].map(sev => {
+                  const items = data.risks.filter(r => r.severity === sev);
+                  if (!items.length) return null;
+                  return (
+                    <div key={sev}>
+                      <div style={{ fontSize: 11, fontFamily: "monospace", letterSpacing: "0.1em", color: severityColors[sev]?.text, marginBottom: 8, textTransform: "uppercase" }}>{sev} Severity</div>
+                      {items.map((r, i) => (
+                        <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 14, background: "#fff", border: `1px solid ${severityColors[sev]?.border}`, borderLeft: `3px solid ${severityColors[sev]?.text}`, borderRadius: 6, padding: "12px 18px", marginBottom: 8 }}>
+                          <span style={{ fontSize: 11, fontFamily: "monospace", background: severityColors[sev]?.bg, color: severityColors[sev]?.text, padding: "3px 10px", borderRadius: 4, whiteSpace: "nowrap", minWidth: 72, textAlign: "center" }}>{r.vendor}</span>
+                          <span style={{ fontSize: 13, color: "#374151", lineHeight: 1.5 }}>{r.risk}</span>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            {activeTab === "roadmap" && (
+              <div style={{ position: "relative" }}>
+                <div style={{ position: "absolute", left: 104, top: 12, bottom: 80, width: 2, background: "#E5E7EB" }} />
+                {data.roadmap.map((phase, i) => (
+                  <div key={i} style={{ display: "flex", gap: 28, marginBottom: 32, position: "relative" }}>
+                    <div style={{ width: 76, textAlign: "right", flexShrink: 0, paddingTop: 2 }}>
+                      <div style={{ fontSize: 10, fontFamily: "monospace", color: "#9CA3AF" }}>{phase.phase}</div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: "#374151", marginTop: 2 }}>{phase.label}</div>
+                    </div>
+                    <div style={{ width: 24, height: 24, borderRadius: "50%", background: phase.color, flexShrink: 0, marginTop: 2, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 11, fontWeight: 700 }}>{i + 1}</div>
+                    <div style={{ flex: 1 }}>
+                      {phase.items.map((item, j) => (
+                        <div key={j} style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 6, padding: "11px 16px", marginBottom: 8, fontSize: 13, color: "#374151", lineHeight: 1.5 }}>{item}</div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+                <div style={{ background: "#F5F3FF", border: "1px solid #DDD6FE", borderRadius: 8, padding: "14px 18px", marginTop: 4 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: "#5B21B6", marginBottom: 4 }}>Strategic Conclusion</div>
+                  <div style={{ fontSize: 13, color: "#6D28D9", lineHeight: 1.6 }}>
+                    The Noca.ai custom build path gives clients a tailored AI layer inside their own Litify instance – no data silo, no per-demand fees, and no dependency on a vendor's roadmap. We control the build, we ship changes fast, and the client owns the asset. The pilot validates the approach on real cases before any significant commitment.
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

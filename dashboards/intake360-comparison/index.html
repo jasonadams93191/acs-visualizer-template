@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intake360 – Phone Stack Modernization Analysis</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #FAFAF8; font-family: Georgia, "Times New Roman", serif; color: #1C1917; }
+    button:focus { outline: none; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+  const { useState } = React;
+
+  const data = {
+    currentPain: [
+      { icon: "①", title: "Dual Login Hell", detail: "Agents must manually log into both the Attorney Assistant Salesforce org and each client's Salesforce org separately — every shift, every call." },
+      { icon: "②", title: "Integration Gaps", detail: "Many Intake360 clients cannot be integrated with the current Regal setup. Revenue is being left on the table due to platform limitations." },
+      { icon: "③", title: "Salesforce as a Contact Center", detail: "Salesforce is a CRM — not a contact center. Running a 21+ agent answering service through Salesforce is a square peg in a round hole." },
+      { icon: "④", title: "High Base Cost", detail: "Regal at $72,000/yr base (before usage and phone lines) is expensive for a platform that still requires agents to live in multiple systems." },
+    ],
+    costs: {
+      current: [
+        { label: "Regal", sublabel: "Phone System — Base Fee Only", cost: 72000, note: "Does not include usage or phone lines", est: false },
+        { label: "Regal OB Minutes", sublabel: "Est. 20K outbound min/month @ $0.012", cost: 2880, note: "Estimate only", est: true },
+      ],
+      proposed: [
+        { label: "RingCentral Contact Center", sublabel: "21 agents × $130/user/yr — Base only", cost: 34020, note: "Does not include usage or phone lines", est: false },
+        { label: "RC OB Minutes", sublabel: "Est. 20K outbound min/month @ $0.016", cost: 3840, note: "Estimate — slightly higher rate than Regal", est: true },
+        { label: "Ivinex", sublabel: "22 Intake360 agents × $100/user/yr", cost: 26400, note: "License fee", est: false },
+        { label: "Ivinex Business Unit", sublabel: "$500/month", cost: null, note: "* Not included in base total — TBD", est: true },
+        { label: "Ivinex Implementation", sublabel: "$200/hr", cost: null, note: "* One-time — scope TBD", est: true },
+      ],
+    },
+    features: [
+      {
+        category: "Agent Experience",
+        items: [
+          { name: "Single unified agent desktop", regal: false, proposed: true },
+          { name: "Connect to multiple client SF orgs from one screen", regal: false, proposed: true },
+          { name: "Script pop on inbound call (caller data auto-surfaces)", regal: false, proposed: true },
+          { name: "No manual login switching between systems", regal: false, proposed: true },
+          { name: "Omnichannel — voice, chat, email, SMS in one view", regal: false, proposed: true },
+        ],
+      },
+      {
+        category: "Phone / Contact Center",
+        items: [
+          { name: "Inbound call routing & IVR", regal: true, proposed: true },
+          { name: "Outbound dialer (preview, progressive, predictive)", regal: true, proposed: true },
+          { name: "Unlimited domestic inbound/outbound minutes", regal: false, proposed: true },
+          { name: "Live call transcription", regal: false, proposed: true },
+          { name: "20+ digital channels (SMS, email, chat, social)", regal: false, proposed: true },
+          { name: "Real-time supervisor monitoring & alerts", regal: false, proposed: true },
+        ],
+      },
+      {
+        category: "AI & Quality Assurance",
+        items: [
+          { name: "Automated post-call QA scoring", regal: false, proposed: true },
+          { name: "Custom QA scorecards per client/firm", regal: false, proposed: true },
+          { name: "Conversation sentiment analysis", regal: false, proposed: true },
+          { name: "Agent coaching recommendations (AI-driven)", regal: false, proposed: true },
+          { name: "Compliance flag & review automation", regal: false, proposed: true },
+          { name: "Talk-to-listen ratio and filler word tracking", regal: false, proposed: true },
+        ],
+      },
+      {
+        category: "Integration & Connectivity",
+        items: [
+          { name: "Native Salesforce Lightning integration", regal: false, proposed: true },
+          { name: "Connect to multiple client SF orgs simultaneously", regal: false, proposed: true },
+          { name: "API hub — 50+ integration connectors", regal: false, proposed: true },
+          { name: "No-code workflow builder for client-specific logic", regal: false, proposed: true },
+          { name: "REST API for custom system connections", regal: false, proposed: true },
+        ],
+      },
+      {
+        category: "Operations & Reporting",
+        items: [
+          { name: "250+ pre-built contact center reports", regal: false, proposed: true },
+          { name: "Per-client performance reporting", regal: false, proposed: true },
+          { name: "Call recording & screen recording", regal: true, proposed: true },
+          { name: "Live agent performance dashboards", regal: false, proposed: true },
+          { name: "Automated follow-up & task assignment", regal: false, proposed: true },
+        ],
+      },
+    ],
+    ivinex: {
+      headline: "The Core Problem Ivinex Solves",
+      body: "Today agents are manually switching between multiple Salesforce instances to handle calls for different law firm clients. Ivinex is the unified agent desktop that sits on top of RingCX and all client systems — agents live in Ivinex, and Ivinex handles the integrations behind the scenes.",
+      capabilities: [
+        { title: "Unified Agent Desktop", detail: "One screen. Every client's data, scripts, and call controls — no tab switching, no manual logins between systems." },
+        { title: "Script Pop Technology", detail: "When a call comes in, Ivinex instantly surfaces the relevant client firm's intake script and caller data. Agents know exactly where they are before they say hello." },
+        { title: "Multi-Tenant Architecture", detail: "Built for companies like Intake360 — manage separate environments for each law firm client within a single platform. Each client gets their own data space, scripts, and workflows." },
+        { title: "API Hub — 50+ Connectors", detail: "Ivinex connects to Salesforce, RingCX, and virtually any other system via REST API. Clients that couldn't integrate with Regal? Ivinex can reach them." },
+        { title: "No-Code Workflow Builder", detail: "Build intake workflows for each law firm client without writing code. Drag-and-drop logic, auto-triggers, follow-up reminders — customized per client." },
+        { title: "Answering Service Native Use Case", detail: "Ivinex is purpose-built for after-hours answering services. It's one of their primary documented use cases — not an adaptation." },
+      ],
+    },
+    ringsense: {
+      headline: "RingSense QA — AI Quality Assurance at Scale",
+      body: "Running a multi-client legal intake service means QA is critical — and doing it manually at volume is impossible. RingSense automates call scoring, flags compliance risks, and identifies coaching opportunities without a supervisor listening to every call.",
+      features: [
+        { title: "Automated Post-Call Scoring", detail: "Every call scored automatically against custom KPIs — no manual review queue. Supervisors focus on flagged calls only." },
+        { title: "Custom Scorecards per Client", detail: "Each law firm client can have their own QA scorecard — different intake scripts, different compliance requirements, different performance benchmarks." },
+        { title: "Compliance Flag & Review", detail: "Automatically flags calls that may have compliance issues — HIPAA-adjacent conversations, missed required disclosures, or out-of-script responses." },
+        { title: "Agent Coaching (AI-Driven)", detail: "Surfaces specific coaching moments with timestamps — 'at 2:34, agent interrupted the caller.' Managers coach with precision, not guesswork." },
+        { title: "Sentiment & Energy Analysis", detail: "Tracks caller and agent sentiment, energy levels, talk-to-listen ratios, and filler word frequency across every call." },
+        { title: "Knowledge Gap Detection", detail: "Identifies recurring patterns where agents are struggling — specific question types, objection handling gaps, or client-specific terminology errors." },
+      ],
+    },
+    migration: [
+      {
+        phase: "Week 1–2", label: "RingCX Setup", color: "#0070D2",
+        items: [
+          "Provision RingCentral Contact Center org — 21 agent seats",
+          "Port phone numbers from Regal to RingCX",
+          "Configure IVR, call flows, and routing rules per client firm",
+          "Set up call recording, screen recording, and transcription",
+        ],
+      },
+      {
+        phase: "Week 2–4", label: "Ivinex Configuration", color: "#7C3AED",
+        items: [
+          "Provision Ivinex — 22 agent licenses + Business Unit",
+          "Connect Ivinex to RingCX (native integration)",
+          "Build multi-tenant client environments — one per law firm",
+          "Configure script pop templates per client intake workflow",
+        ],
+      },
+      {
+        phase: "Week 3–5", label: "Salesforce Integrations", color: "#059669",
+        items: [
+          "Connect Ivinex to Attorney Assistant Salesforce org via API",
+          "Connect Ivinex to EOL Salesforce org via API",
+          "Map intake data fields — calls write to correct SF records automatically",
+          "Begin onboarding additional client orgs via Ivinex API Hub",
+        ],
+      },
+      {
+        phase: "Week 5–6", label: "QA & Cutover", color: "#D97706",
+        items: [
+          "Configure RingSense QA scorecards — baseline + per-client scorecards",
+          "Train agents on Ivinex unified desktop — parallel run with Regal",
+          "Validate call flows, SF sync, and script pop on live calls",
+          "Cancel Regal — full cutover complete",
+        ],
+      },
+    ],
+  };
+
+  const currentTotal = data.costs.current.reduce((s, i) => s + (i.cost || 0), 0);
+  const proposedBase = data.costs.proposed.reduce((s, i) => s + (i.cost || 0), 0);
+  const savings = currentTotal - proposedBase;
+  const fmt = (n) => n != null ? "$" + n.toLocaleString() : "TBD";
+
+  const renderBool = (val) => val
+    ? <span style={{ fontSize: 16, color: "#059669", fontWeight: 700 }}>✓</span>
+    : <span style={{ fontSize: 16, color: "#E5E7EB", fontWeight: 700 }}>✗</span>;
+
+  function App() {
+    const [activeTab, setActiveTab] = useState("overview");
+    const [expandedCat, setExpandedCat] = useState(null);
+
+    const tabs = [
+      { id: "overview", label: "Overview" },
+      { id: "cost", label: "Cost Analysis" },
+      { id: "features", label: "Feature Matrix" },
+      { id: "ivinex", label: "Ivinex Deep Dive" },
+      { id: "ringsense", label: "RingSense QA" },
+      { id: "migration", label: "Migration Path" },
+    ];
+
+    return (
+      <div style={{ fontFamily: "Georgia, 'Times New Roman', serif", background: "#FAFAF8", minHeight: "100vh", color: "#1C1917" }}>
+
+        {/* Header */}
+        <div style={{ background: "#1C1917", padding: "28px 32px 22px", borderBottom: "3px solid #0070D2" }}>
+          <div style={{ maxWidth: 980, margin: "0 auto" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+              <div>
+                <div style={{ fontSize: 10, letterSpacing: "0.15em", color: "#9CA3AF", textTransform: "uppercase", marginBottom: 6, fontFamily: "monospace" }}>
+                  Contact Center Modernization · Attorney Assistant / Intake360 · March 2026
+                </div>
+                <h1 style={{ margin: 0, fontSize: 26, fontWeight: 700, color: "#FAFAF8", lineHeight: 1.2 }}>
+                  Regal → RingCentral CX + Ivinex
+                </h1>
+                <p style={{ margin: "6px 0 0", fontSize: 14, color: "#9CA3AF", fontStyle: "italic" }}>
+                  One Agent Desktop · All Client Orgs · AI-Powered QA
+                </p>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
+                <div style={{ background: "#0070D2", color: "#fff", padding: "8px 16px", borderRadius: 6, fontSize: 12, fontFamily: "monospace" }}>
+                  ✦ Recommended: RingCX + Ivinex
+                </div>
+                <div style={{ background: "#064E3B", color: "#6EE7B7", padding: "6px 14px", borderRadius: 6, fontSize: 11, fontFamily: "monospace" }}>
+                  Base Savings: {fmt(savings)}/yr
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Banner */}
+        <div style={{ background: "#EFF6FF", borderBottom: "1px solid #BFDBFE", padding: "12px 32px" }}>
+          <div style={{ maxWidth: 980, margin: "0 auto", fontSize: 13, color: "#1D4ED8", lineHeight: 1.6 }}>
+            <strong>The Core Argument:</strong> Regal is expensive and keeps agents trapped in multiple systems. RingCX handles the phone infrastructure — and Ivinex becomes the single agent desktop that connects to every client Salesforce org, every intake workflow, and every new client integration,{" "}
+            <strong>without agents ever leaving one screen.</strong> RingSense QA then scores every call automatically — impossible at volume without AI.
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div style={{ background: "#fff", borderBottom: "1px solid #E5E7EB", padding: "0 32px", position: "sticky", top: 0, zIndex: 10 }}>
+          <div style={{ maxWidth: 980, margin: "0 auto", display: "flex" }}>
+            {tabs.map(tab => (
+              <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{
+                padding: "12px 14px", border: "none", background: "none", cursor: "pointer",
+                fontSize: 13, fontFamily: "Georgia, serif",
+                color: activeTab === tab.id ? "#1C1917" : "#6B7280",
+                borderBottom: activeTab === tab.id ? "2px solid #0070D2" : "2px solid transparent",
+                fontWeight: activeTab === tab.id ? 700 : 400,
+                transition: "all 0.15s", marginBottom: -1,
+              }}>{tab.label}</button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ maxWidth: 980, margin: "0 auto", padding: "28px 32px 60px" }}>
+
+          {/* OVERVIEW */}
+          {activeTab === "overview" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+
+              {/* Pain points */}
+              <div>
+                <div style={{ fontSize: 11, fontFamily: "monospace", letterSpacing: "0.1em", color: "#DC2626", textTransform: "uppercase", marginBottom: 12 }}>
+                  Current State — Why Regal Is Not Working
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  {data.currentPain.map((p, i) => (
+                    <div key={i} style={{ background: "#fff", border: "1px solid #FECACA", borderLeft: "3px solid #DC2626", borderRadius: 8, padding: 16, display: "flex", gap: 12 }}>
+                      <span style={{ fontSize: 18, color: "#DC2626", flexShrink: 0 }}>{p.icon}</span>
+                      <div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#1C1917", marginBottom: 4 }}>{p.title}</div>
+                        <div style={{ fontSize: 12, color: "#374151", lineHeight: 1.6 }}>{p.detail}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ textAlign: "center", fontSize: 22, color: "#0070D2" }}>↓</div>
+
+              {/* Proposed */}
+              <div>
+                <div style={{ fontSize: 11, fontFamily: "monospace", letterSpacing: "0.1em", color: "#0070D2", textTransform: "uppercase", marginBottom: 12 }}>
+                  Proposed Stack — Two Products, One Agent Experience
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+
+                  {/* RingCX */}
+                  <div style={{ background: "#fff", border: "1px solid #BFDBFE", borderLeft: "4px solid #0070D2", borderRadius: 8, padding: 20 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+                      <div>
+                        <h3 style={{ fontSize: 17, fontWeight: 700, color: "#0070D2", marginBottom: 2 }}>RingCentral Contact Center</h3>
+                        <div style={{ fontSize: 11, color: "#6B7280", fontStyle: "italic" }}>Phone Infrastructure + RingSense AI QA</div>
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: "#0070D2" }}>$34,020/yr</div>
+                        <div style={{ fontSize: 10, color: "#9CA3AF" }}>base · 21 agents</div>
+                      </div>
+                    </div>
+                    <p style={{ fontSize: 12, color: "#374151", lineHeight: 1.6, borderLeft: "3px solid #BFDBFE", paddingLeft: 12, marginBottom: 14 }}>
+                      Replaces Regal as the phone/contact center layer. Voice, 20+ digital channels, unlimited domestic minutes, live transcription, AI supervisor assist, and RingSense QA — all included.
+                    </p>
+                    {["Replaces Regal — phone, routing, IVR, recording", "20+ channels: voice, SMS, email, chat, social", "Unlimited domestic inbound + outbound minutes", "RingSense QA — automated post-call scoring", "Native Salesforce Lightning integration", "Live transcription + AI supervisor alerts"].map((f, i) => (
+                      <div key={i} style={{ fontSize: 12, color: "#374151", marginBottom: 4, paddingLeft: 10, borderLeft: "2px solid #BFDBFE" }}>{f}</div>
+                    ))}
+                  </div>
+
+                  {/* Ivinex */}
+                  <div style={{ background: "#fff", border: "1px solid #DDD6FE", borderLeft: "4px solid #7C3AED", borderRadius: 8, padding: 20 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+                      <div>
+                        <h3 style={{ fontSize: 17, fontWeight: 700, color: "#7C3AED", marginBottom: 2 }}>Ivinex</h3>
+                        <div style={{ fontSize: 11, color: "#6B7280", fontStyle: "italic" }}>Unified Agent Desktop + Multi-Client CRM</div>
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: "#7C3AED" }}>$26,400/yr</div>
+                        <div style={{ fontSize: 10, color: "#9CA3AF" }}>license · 22 agents</div>
+                      </div>
+                    </div>
+                    <p style={{ fontSize: 12, color: "#374151", lineHeight: 1.6, borderLeft: "3px solid #DDD6FE", paddingLeft: 12, marginBottom: 14 }}>
+                      The unified desktop that eliminates multi-system logins. Ivinex sits on top of RingCX and all client Salesforce orgs — agents see everything in one screen, and Ivinex handles the integrations behind the scenes.
+                    </p>
+                    {["Agents live in ONE screen — no multi-SF-login", "Script pop — caller data surfaces instantly on ring", "Multi-tenant: separate client env per law firm", "API Hub: 50+ connectors for new client integrations", "No-code workflow builder per client", "Purpose-built for answering services"].map((f, i) => (
+                      <div key={i} style={{ fontSize: 12, color: "#374151", marginBottom: 4, paddingLeft: 10, borderLeft: "2px solid #DDD6FE" }}>{f}</div>
+                    ))}
+                  </div>
+
+                </div>
+              </div>
+
+              {/* Architecture callout */}
+              <div style={{ background: "#F0FDF4", border: "1px solid #BBF7D0", borderLeft: "4px solid #059669", borderRadius: 8, padding: 18 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#166534", marginBottom: 8 }}>How They Work Together</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                  {["All Client SF Orgs", "→", "Ivinex API Hub", "→", "Ivinex Agent Desktop", "↔", "RingCX Phone System", "→", "RingSense QA"].map((item, i) => (
+                    item === "→" || item === "↔"
+                      ? <span key={i} style={{ color: "#059669", fontWeight: 700, fontSize: 16 }}>{item}</span>
+                      : <span key={i} style={{ fontSize: 12, fontWeight: 600, background: "#fff", border: "1px solid #BBF7D0", padding: "5px 12px", borderRadius: 20, color: "#166534" }}>{item}</span>
+                  ))}
+                </div>
+                <div style={{ fontSize: 12, color: "#374151", marginTop: 10, lineHeight: 1.6 }}>
+                  Agents log into Ivinex once. Ivinex connects to RingCX for call handling and to every client Salesforce org via API. When a call arrives, Ivinex pops the right client's intake script and SF data automatically. RingSense scores the call after it ends.
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* COST */}
+          {activeTab === "cost" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
+                <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 8, padding: 20, textAlign: "center" }}>
+                  <div style={{ fontSize: 11, fontFamily: "monospace", color: "#6B7280", textTransform: "uppercase", marginBottom: 8 }}>Regal Total (Base + Est.)</div>
+                  <div style={{ fontSize: 32, fontWeight: 700, color: "#DC2626" }}>{fmt(currentTotal)}</div>
+                  <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 4 }}>per year · excludes phone lines</div>
+                </div>
+                <div style={{ background: "#fff", border: "2px solid #0070D2", borderRadius: 8, padding: 20, textAlign: "center" }}>
+                  <div style={{ fontSize: 11, fontFamily: "monospace", color: "#0070D2", textTransform: "uppercase", marginBottom: 8 }}>RingCX + Ivinex (Base*)</div>
+                  <div style={{ fontSize: 32, fontWeight: 700, color: "#0070D2" }}>{fmt(proposedBase)}</div>
+                  <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 4 }}>per year · excludes BU fee + impl.</div>
+                </div>
+                <div style={{ background: "#F0FDF4", border: "1px solid #BBF7D0", borderRadius: 8, padding: 20, textAlign: "center" }}>
+                  <div style={{ fontSize: 11, fontFamily: "monospace", color: "#166534", textTransform: "uppercase", marginBottom: 8 }}>Base Savings</div>
+                  <div style={{ fontSize: 32, fontWeight: 700, color: "#059669" }}>{fmt(savings)}</div>
+                  <div style={{ fontSize: 11, color: "#166534", marginTop: 4 }}>per year before * items</div>
+                </div>
+              </div>
+
+              <table style={{ width: "100%", borderCollapse: "collapse", background: "#fff", borderRadius: 8, overflow: "hidden", border: "1px solid #E5E7EB", fontSize: 13 }}>
+                <thead>
+                  <tr style={{ background: "#1C1917" }}>
+                    <th style={{ padding: "12px 18px", textAlign: "left", color: "#9CA3AF", fontWeight: 400, fontFamily: "monospace", fontSize: 10, letterSpacing: "0.1em", width: "30%" }}>ITEM</th>
+                    <th style={{ padding: "12px 14px", textAlign: "left", color: "#9CA3AF", fontWeight: 400, fontFamily: "monospace", fontSize: 10 }}>DETAILS</th>
+                    <th style={{ padding: "12px 18px", textAlign: "right", color: "#9CA3AF", fontWeight: 400, fontFamily: "monospace", fontSize: 10 }}>ANNUAL</th>
+                    <th style={{ padding: "12px 14px", color: "#9CA3AF", fontWeight: 400, fontFamily: "monospace", fontSize: 10 }}>NOTE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style={{ background: "#FEF2F2" }}>
+                    <td colSpan={4} style={{ padding: "8px 18px", fontWeight: 700, fontSize: 11, fontFamily: "monospace", textTransform: "uppercase", color: "#DC2626" }}>Current — Regal</td>
+                  </tr>
+                  {data.costs.current.map((item, i) => (
+                    <tr key={i} style={{ borderTop: "1px solid #F3F4F6", background: i % 2 === 0 ? "#fff" : "#FAFAFA" }}>
+                      <td style={{ padding: "11px 18px", fontWeight: 600 }}>{item.label}</td>
+                      <td style={{ padding: "11px 14px", color: "#6B7280", fontSize: 12 }}>{item.sublabel}</td>
+                      <td style={{ padding: "11px 18px", textAlign: "right", fontWeight: 600, color: item.est ? "#6B7280" : "#DC2626" }}>{fmt(item.cost)}{item.est ? " est." : ""}</td>
+                      <td style={{ padding: "11px 14px", fontSize: 11, color: "#9CA3AF" }}>{item.note}</td>
+                    </tr>
+                  ))}
+                  <tr style={{ borderTop: "2px solid #E5E7EB", background: "#FEF2F2" }}>
+                    <td colSpan={2} style={{ padding: "12px 18px", fontWeight: 700, fontFamily: "monospace", fontSize: 11, textTransform: "uppercase" }}>Regal Total</td>
+                    <td style={{ padding: "12px 18px", textAlign: "right", fontWeight: 700, color: "#DC2626" }}>{fmt(currentTotal)}</td>
+                    <td />
+                  </tr>
+
+                  <tr style={{ background: "#EFF6FF" }}>
+                    <td colSpan={4} style={{ padding: "8px 18px", fontWeight: 700, fontSize: 11, fontFamily: "monospace", textTransform: "uppercase", color: "#0070D2" }}>Proposed — RingCX + Ivinex</td>
+                  </tr>
+                  {data.costs.proposed.map((item, i) => (
+                    <tr key={i} style={{ borderTop: "1px solid #F3F4F6", background: item.cost == null ? "#FFFBEB" : (i % 2 === 0 ? "#fff" : "#FAFAFA") }}>
+                      <td style={{ padding: "11px 18px", fontWeight: 600 }}>{item.label}</td>
+                      <td style={{ padding: "11px 14px", color: "#6B7280", fontSize: 12 }}>{item.sublabel}</td>
+                      <td style={{ padding: "11px 18px", textAlign: "right", fontWeight: 600, color: item.cost == null ? "#92400E" : item.est ? "#6B7280" : "#0070D2" }}>
+                        {item.cost != null ? fmt(item.cost) + (item.est ? " est." : "") : "TBD *"}
+                      </td>
+                      <td style={{ padding: "11px 14px", fontSize: 11, color: "#9CA3AF" }}>{item.note}</td>
+                    </tr>
+                  ))}
+                  <tr style={{ borderTop: "2px solid #BFDBFE", background: "#EFF6FF" }}>
+                    <td colSpan={2} style={{ padding: "12px 18px", fontWeight: 700, fontFamily: "monospace", fontSize: 11, textTransform: "uppercase" }}>Proposed Base Total*</td>
+                    <td style={{ padding: "12px 18px", textAlign: "right", fontWeight: 700, color: "#0070D2" }}>{fmt(proposedBase)}</td>
+                    <td style={{ padding: "12px 14px", fontSize: 11, color: "#9CA3AF" }}>excl. BU fee + impl.</td>
+                  </tr>
+                  <tr style={{ borderTop: "2px solid #BBF7D0", background: "#F0FDF4" }}>
+                    <td colSpan={2} style={{ padding: "12px 18px", fontWeight: 700, fontFamily: "monospace", fontSize: 11, textTransform: "uppercase", color: "#166534" }}>Base Savings</td>
+                    <td style={{ padding: "12px 18px", textAlign: "right", fontWeight: 700, color: "#059669" }}>+{fmt(savings)}/yr</td>
+                    <td />
+                  </tr>
+                </tbody>
+              </table>
+
+              <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: 8, padding: "14px 18px", fontSize: 13, color: "#92400E", lineHeight: 1.6 }}>
+                <strong>Important notes:</strong> The Ivinex Business Unit fee ($500/month = $6,000/yr) and Implementation hours ($200/hr) are not included in the base total above. Once scoped, these will reduce the net savings figure. Additionally, RingCX outbound per-minute rate ($0.016) is slightly higher than Regal ($0.012) — monitor OB usage at volume. Phone line costs are excluded from both stacks and should be compared separately.
+              </div>
+            </div>
+          )}
+
+          {/* FEATURES */}
+          {activeTab === "features" && (
+            <div>
+              <table style={{ width: "100%", borderCollapse: "collapse", background: "#fff", borderRadius: 8, overflow: "hidden", border: "1px solid #E5E7EB", fontSize: 13 }}>
+                <thead>
+                  <tr style={{ background: "#1C1917" }}>
+                    <th style={{ padding: "12px 18px", textAlign: "left", color: "#9CA3AF", fontWeight: 400, fontFamily: "monospace", fontSize: 10, letterSpacing: "0.1em", width: "48%" }}>CAPABILITY</th>
+                    <th style={{ padding: "12px 14px", textAlign: "center", color: "#E8572A", fontWeight: 700, fontSize: 12 }}>Regal</th>
+                    <th style={{ padding: "12px 14px", textAlign: "center", color: "#60A5FA", fontWeight: 700, fontSize: 12 }}>RingCX + Ivinex</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.features.map((cat, ci) => (
+                    <>
+                      <tr key={`cat-${ci}`} style={{ background: "#F9FAFB", cursor: "pointer" }} onClick={() => setExpandedCat(expandedCat === ci ? null : ci)}>
+                        <td colSpan={3} style={{ padding: "9px 18px", fontWeight: 700, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "#374151", fontFamily: "monospace" }}>
+                          {expandedCat === ci ? "▾" : "▸"} {cat.category}
+                        </td>
+                      </tr>
+                      {(expandedCat === null || expandedCat === ci) && cat.items.map((item, ii) => (
+                        <tr key={`item-${ci}-${ii}`} style={{ borderTop: "1px solid #F3F4F6", background: ii % 2 === 0 ? "#fff" : "#FAFAFA" }}>
+                          <td style={{ padding: "10px 18px", color: "#374151" }}>{item.name}</td>
+                          <td style={{ padding: "10px 14px", textAlign: "center" }}>{renderBool(item.regal)}</td>
+                          <td style={{ padding: "10px 14px", textAlign: "center" }}>{renderBool(item.proposed)}</td>
+                        </tr>
+                      ))}
+                    </>
+                  ))}
+                </tbody>
+              </table>
+              <div style={{ fontSize: 12, color: "#6B7280", fontFamily: "monospace", marginTop: 10 }}>
+                Click a category row to isolate · <span style={{ color: "#059669" }}>✓</span> Available &nbsp; <span style={{ color: "#D1D5DB" }}>✗</span> Not Available
+              </div>
+            </div>
+          )}
+
+          {/* IVINEX */}
+          {activeTab === "ivinex" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <div style={{ background: "#F5F3FF", border: "2px solid #DDD6FE", borderLeft: "4px solid #7C3AED", borderRadius: 8, padding: 22 }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#7C3AED", marginBottom: 8 }}>{data.ivinex.headline}</div>
+                <p style={{ fontSize: 13, color: "#374151", lineHeight: 1.7 }}>{data.ivinex.body}</p>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                {data.ivinex.capabilities.map((cap, i) => (
+                  <div key={i} style={{ background: "#fff", border: "1px solid #DDD6FE", borderLeft: "3px solid #7C3AED", borderRadius: 6, padding: 16 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#1C1917", marginBottom: 5 }}>{cap.title}</div>
+                    <div style={{ fontSize: 12, color: "#374151", lineHeight: 1.6 }}>{cap.detail}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 8, padding: 18 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 10 }}>Why Ivinex Over Just Using Salesforce for Agents</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                  {[
+                    { label: "Salesforce", items: ["Built for CRM — not contact centers", "No native multi-tenant agent desktop", "Each client org requires a separate login", "No script pop for inbound calls", "Contact center features require expensive add-ons"] },
+                    { label: "Ivinex", items: ["Built for answering services specifically", "Multi-tenant native — one desktop, many clients", "One login — all client orgs connected via API", "Script pop is core feature, not an add-on", "Connects to Salesforce and 50+ other systems"] },
+                  ].map((col, i) => (
+                    <div key={i}>
+                      <div style={{ fontSize: 11, fontFamily: "monospace", fontWeight: 700, color: i === 0 ? "#DC2626" : "#7C3AED", marginBottom: 8, textTransform: "uppercase" }}>{col.label}</div>
+                      {col.items.map((item, j) => (
+                        <div key={j} style={{ fontSize: 12, color: "#374151", marginBottom: 5, paddingLeft: 10, borderLeft: `2px solid ${i === 0 ? "#FECACA" : "#DDD6FE"}` }}>{item}</div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* RINGSENSE */}
+          {activeTab === "ringsense" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <div style={{ background: "#EFF6FF", border: "2px solid #BFDBFE", borderLeft: "4px solid #0070D2", borderRadius: 8, padding: 22 }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#0070D2", marginBottom: 8 }}>{data.ringsense.headline}</div>
+                <p style={{ fontSize: 13, color: "#374151", lineHeight: 1.7 }}>{data.ringsense.body}</p>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                {data.ringsense.features.map((f, i) => (
+                  <div key={i} style={{ background: "#fff", border: "1px solid #BFDBFE", borderLeft: "3px solid #0070D2", borderRadius: 6, padding: 16 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#1C1917", marginBottom: 5 }}>{f.title}</div>
+                    <div style={{ fontSize: 12, color: "#374151", lineHeight: 1.6 }}>{f.detail}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ background: "#F0FDF4", border: "1px solid #BBF7D0", borderRadius: 8, padding: "14px 18px" }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#166534", marginBottom: 6 }}>Why This Matters for a Multi-Client Answering Service</div>
+                <div style={{ fontSize: 13, color: "#374151", lineHeight: 1.7 }}>
+                  At the volume Intake360 operates, manually reviewing calls is not realistic. RingSense scores every call automatically — supervisors get a prioritized list of calls that need attention instead of listening to random samples. Per-client scorecards mean each law firm client gets QA benchmarks tailored to their intake requirements, not a one-size-fits-all approach.
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* MIGRATION */}
+          {activeTab === "migration" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              <div style={{ position: "relative" }}>
+                <div style={{ position: "absolute", left: 104, top: 12, bottom: 80, width: 2, background: "#E5E7EB" }} />
+                {data.migration.map((phase, i) => (
+                  <div key={i} style={{ display: "flex", gap: 20, marginBottom: 28, position: "relative" }}>
+                    <div style={{ width: 80, textAlign: "right", flexShrink: 0, paddingTop: 2 }}>
+                      <div style={{ fontSize: 10, fontFamily: "monospace", color: "#9CA3AF" }}>{phase.phase}</div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: "#374151", marginTop: 2 }}>{phase.label}</div>
+                    </div>
+                    <div style={{ width: 24, height: 24, borderRadius: "50%", background: phase.color, flexShrink: 0, marginTop: 2, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 11, fontWeight: 700 }}>{i + 1}</div>
+                    <div style={{ flex: 1 }}>
+                      {phase.items.map((item, j) => (
+                        <div key={j} style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 6, padding: "10px 16px", marginBottom: 8, fontSize: 13, color: "#374151", lineHeight: 1.5 }}>{item}</div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ background: "#F0FDF4", border: "1px solid #BBF7D0", borderRadius: 8, padding: "14px 18px" }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#166534", marginBottom: 4 }}>Expected Outcome — ~6 Weeks</div>
+                <div style={{ fontSize: 13, color: "#14532D", lineHeight: 1.6 }}>
+                  Regal cancelled. All agents in one Ivinex desktop connected to RingCX and every client Salesforce org. New clients onboarded via Ivinex API Hub without agent login changes. RingSense scoring every call. Base savings of {fmt(savings)}/yr realized — with significant operational efficiency gains beyond pure cost.
+                </div>
+              </div>
+            </div>
+          )}
+
+        </div>
+      </div>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>

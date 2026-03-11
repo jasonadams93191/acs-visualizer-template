@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Titan vs. Current Stack – Vendor Consolidation Analysis</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #FAFAF8; font-family: Georgia, "Times New Roman", serif; color: #1C1917; }
+    button:focus { outline: none; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const data = {
+      currentStack: [
+        {
+          id: "hellosign",
+          name: "HelloSign",
+          purpose: "Client eSignature",
+          cost: 2640,
+          color: "#0F9D58",
+          description: "Standalone eSignature tool for client document signing. Not connected to Salesforce — signed documents must be manually retrieved and uploaded.",
+          limitations: [
+            "No native Salesforce integration — manual document handling",
+            "Separate vendor contract and support relationship",
+            "No document generation — only signing",
+            "Cannot trigger automations from Salesforce data",
+          ],
+        },
+        {
+          id: "hona",
+          name: "HONA",
+          purpose: "Client Portal · Document Retrieval · Matters",
+          cost: 11638,
+          color: "#F4B400",
+          description: "Client-facing portal for document sharing and matter communication. Highest cost item in the stack at $11,638/yr — and still operates as a data silo outside Salesforce.",
+          limitations: [
+            "Largest cost driver at $11,638/yr",
+            "Separate system — client data not in Salesforce",
+            "Manual sync required between HONA and Salesforce records",
+            "Limited automation and workflow capabilities",
+          ],
+        },
+        {
+          id: "jotform",
+          name: "Jotform",
+          purpose: "Public-Facing Forms",
+          cost: 1548,
+          color: "#DB4437",
+          description: "Public intake and data collection forms. Conditional: only relevant if the selected Titan plan does not include a Forms module.",
+          limitations: [
+            "Form submissions not automatically written to Salesforce",
+            "Conditional — may be replaceable by Titan Forms",
+            "Separate vendor with its own data storage",
+            "No connection to document workflows",
+          ],
+        },
+      ],
+      titan: {
+        name: "Titan",
+        cost: 15552,
+        color: "#7C3AED",
+        tagline: "One Platform. Native Salesforce. Replaces All Three.",
+        inclusions: [
+          { label: "API Calls", value: "10,000 / month" },
+          { label: "Document Generation", value: "1,500 docs / month" },
+          { label: "Users", value: "1 Admin + 2 Editors" },
+          { label: "Doc Generation Users", value: "10 users" },
+          { label: "Templates", value: "150 templates" },
+        ],
+        description: "Titan is a native Salesforce platform covering eSignature, document generation, client-facing portals, and public forms — all reading and writing directly to Salesforce records. One vendor, one contract, zero data silos.",
+        capabilities: [
+          "eSignature — replaces HelloSign, triggered from Salesforce",
+          "Document generation from Salesforce data — merge fields, templates",
+          "Client portal — replaces HONA, matter data lives in Salesforce",
+          "Public-facing forms — replaces Jotform, submissions write to SF",
+          "All actions trigger Salesforce automations (Flow, Apex)",
+          "Audit trail and document history directly on Salesforce records",
+        ],
+      },
+      features: [
+        {
+          category: "eSignature",
+          items: [
+            { name: "Client Document Signing", hellosign: true, hona: false, jotform: false, titan: true },
+            { name: "Triggered from Salesforce Record", hellosign: false, hona: false, jotform: false, titan: true },
+            { name: "Signed Doc Auto-Attached to SF Record", hellosign: false, hona: false, jotform: false, titan: true },
+            { name: "Signature Status Tracked in Salesforce", hellosign: false, hona: false, jotform: false, titan: true },
+          ],
+        },
+        {
+          category: "Document Generation",
+          items: [
+            { name: "Generate Docs from Salesforce Data", hellosign: false, hona: false, jotform: false, titan: true },
+            { name: "Merge Fields from SF Records", hellosign: false, hona: false, jotform: false, titan: true },
+            { name: "Template Library (150 templates)", hellosign: false, hona: false, jotform: false, titan: true },
+            { name: "PDF / Word Output", hellosign: false, hona: false, jotform: false, titan: true },
+          ],
+        },
+        {
+          category: "Client Portal",
+          items: [
+            { name: "Client-Facing Matter Portal", hellosign: false, hona: true, jotform: false, titan: true },
+            { name: "Document Sharing with Clients", hellosign: false, hona: true, jotform: false, titan: true },
+            { name: "Portal Data Synced to Salesforce", hellosign: false, hona: false, jotform: false, titan: true },
+            { name: "Client Communication Logged in SF", hellosign: false, hona: false, jotform: false, titan: true },
+          ],
+        },
+        {
+          category: "Forms & Intake",
+          items: [
+            { name: "Public-Facing Web Forms", hellosign: false, hona: false, jotform: true, titan: true },
+            { name: "Form Submissions Write to Salesforce", hellosign: false, hona: false, jotform: false, titan: true },
+            { name: "Conditional Logic in Forms", hellosign: false, hona: false, jotform: true, titan: true },
+            { name: "Trigger SF Automations on Submit", hellosign: false, hona: false, jotform: false, titan: true },
+          ],
+        },
+        {
+          category: "Salesforce Integration",
+          items: [
+            { name: "Native Salesforce App (no middleware)", hellosign: false, hona: false, jotform: false, titan: true },
+            { name: "Read/Write Salesforce Records Directly", hellosign: false, hona: false, jotform: false, titan: true },
+            { name: "Trigger Flow / Apex from Actions", hellosign: false, hona: false, jotform: false, titan: true },
+            { name: "Full Audit Trail on SF Records", hellosign: false, hona: false, jotform: false, titan: true },
+          ],
+        },
+      ],
+      onboarding: {
+        headline: "Critical Gap: Client Onboarding & Document Collection",
+        body: "Onboarding document collection is a major pain point today. Clients have no clear, guided way to submit intake documents — staff are chasing down files manually, and nothing flows directly into Salesforce. Titan solves this end-to-end.",
+        steps: [
+          { icon: "①", label: "Client receives a Titan portal link", detail: "Automatically triggered from Salesforce when a matter is created" },
+          { icon: "②", label: "Client uploads documents via the portal", detail: "Guided checklist — ID, insurance cards, medical records, etc. No login friction" },
+          { icon: "③", label: "Documents attach directly to the SF matter record", detail: "No manual download, rename, or upload by staff — it's automatic" },
+          { icon: "④", label: "Team is notified immediately in Salesforce", detail: "Flow triggers a task, notification, or Chatter post the moment a document is received" },
+        ],
+      },
+      added: [
+        { capability: "Client onboarding portal — guided document upload direct to Salesforce", impact: "Critical", note: "Solves the firm's #1 pain point — no more chasing clients for documents manually" },
+        { capability: "Instant team notification when client uploads a document", impact: "Critical", note: "Salesforce Flow fires immediately on receipt — zero lag, zero manual checking" },
+        { capability: "Document generation from live Salesforce data", impact: "High", note: "No current tool does this — eliminates manual document prep" },
+        { capability: "eSignature status tracked directly on SF matter records", impact: "High", note: "HelloSign has no SF connection — status tracked manually today" },
+        { capability: "Form submissions create/update SF records automatically", impact: "High", note: "Jotform submissions are disconnected from Salesforce today" },
+        { capability: "Client portal activity visible in Salesforce", impact: "Medium", note: "HONA operates as a separate system with no SF sync" },
+        { capability: "All actions can trigger Salesforce automations", impact: "High", note: "Unlocks end-to-end automation across the full matter lifecycle" },
+        { capability: "150 reusable document templates", impact: "Medium", note: "Standardizes document output across the firm" },
+        { capability: "Single vendor — one contract, one support team", impact: "Medium", note: "Replaces 3 separate vendor relationships" },
+      ],
+    };
+
+    const impactColors = {
+      Critical: { bg: "#FEF2F2", text: "#DC2626", border: "#FECACA" },
+      High: { bg: "#F0FDF4", text: "#166534", border: "#BBF7D0" },
+      Medium: { bg: "#FFFBEB", text: "#92400E", border: "#FDE68A" },
+    };
+
+    const currentTotal = data.currentStack.reduce((s, t) => s + t.cost, 0);
+    const savings = currentTotal - data.titan.cost;
+
+    const renderBool = (val) => {
+      if (val === true) return <span style={{ fontSize: 16, color: "#059669", fontWeight: 700 }}>✓</span>;
+      return <span style={{ fontSize: 16, color: "#E5E7EB", fontWeight: 700 }}>✗</span>;
+    };
+
+    const fmt = (n) => "$" + n.toLocaleString();
+
+    function App() {
+      const [activeTab, setActiveTab] = useState("overview");
+      const [expandedCat, setExpandedCat] = useState(null);
+
+      const tabs = [
+        { id: "overview", label: "Overview" },
+        { id: "cost", label: "Cost Analysis" },
+        { id: "features", label: "Feature Matrix" },
+        { id: "added", label: "Added Capabilities" },
+        { id: "migration", label: "Migration Path" },
+      ];
+
+      return (
+        <div style={{ fontFamily: "Georgia, 'Times New Roman', serif", background: "#FAFAF8", minHeight: "100vh", color: "#1C1917" }}>
+
+          {/* Header */}
+          <div style={{ background: "#1C1917", padding: "28px 32px 22px", borderBottom: "3px solid #7C3AED" }}>
+            <div style={{ maxWidth: 960, margin: "0 auto" }}>
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+                <div>
+                  <div style={{ fontSize: 10, letterSpacing: "0.15em", color: "#9CA3AF", textTransform: "uppercase", marginBottom: 6, fontFamily: "monospace" }}>
+                    Vendor Consolidation Analysis · Salesforce Platform · March 2026
+                  </div>
+                  <h1 style={{ margin: 0, fontSize: 26, fontWeight: 700, color: "#FAFAF8", lineHeight: 1.2 }}>
+                    Titan vs. Current Tech Stack
+                  </h1>
+                  <p style={{ margin: "6px 0 0", fontSize: 14, color: "#9CA3AF", fontStyle: "italic" }}>
+                    HelloSign · HONA · Jotform → One Native Salesforce Platform
+                  </p>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
+                  <div style={{ background: "#7C3AED", color: "#fff", padding: "8px 16px", borderRadius: 6, fontSize: 12, fontFamily: "monospace" }}>
+                    ✦ Recommended: Titan
+                  </div>
+                  <div style={{ background: "#064E3B", color: "#6EE7B7", padding: "6px 14px", borderRadius: 6, fontSize: 11, fontFamily: "monospace" }}>
+                    Net Savings: {fmt(savings)}/yr
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Banner */}
+          <div style={{ background: "#F5F3FF", borderBottom: "1px solid #DDD6FE", padding: "12px 32px" }}>
+            <div style={{ maxWidth: 960, margin: "0 auto", fontSize: 13, color: "#5B21B6", lineHeight: 1.6 }}>
+              <strong>The Case for Consolidation:</strong> Three separate vendors, three contracts, and zero native Salesforce integration.
+              Titan replaces all three tools at a lower total cost — and eliminates every data silo in the process.
+              Every signature, form submission, and client portal interaction flows directly into Salesforce.
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <div style={{ background: "#fff", borderBottom: "1px solid #E5E7EB", padding: "0 32px", position: "sticky", top: 0, zIndex: 10 }}>
+            <div style={{ maxWidth: 960, margin: "0 auto", display: "flex" }}>
+              {tabs.map(tab => (
+                <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{
+                  padding: "12px 16px", border: "none", background: "none", cursor: "pointer",
+                  fontSize: 13, fontFamily: "Georgia, serif",
+                  color: activeTab === tab.id ? "#1C1917" : "#6B7280",
+                  borderBottom: activeTab === tab.id ? "2px solid #7C3AED" : "2px solid transparent",
+                  fontWeight: activeTab === tab.id ? 700 : 400,
+                  transition: "all 0.15s", marginBottom: -1,
+                }}>{tab.label}</button>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ maxWidth: 960, margin: "0 auto", padding: "28px 32px 60px" }}>
+
+            {/* OVERVIEW */}
+            {activeTab === "overview" && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+
+                {/* Current Stack */}
+                <div>
+                  <div style={{ fontSize: 11, fontFamily: "monospace", letterSpacing: "0.1em", color: "#6B7280", textTransform: "uppercase", marginBottom: 12 }}>
+                    Current Stack — 3 Vendors · {fmt(currentTotal)}/yr
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
+                    {data.currentStack.map(tool => (
+                      <div key={tool.id} style={{
+                        background: "#fff", border: "1px solid #E5E7EB",
+                        borderLeft: `4px solid ${tool.color}`,
+                        borderRadius: 8, padding: 18,
+                      }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
+                          <h3 style={{ fontSize: 16, fontWeight: 700, color: "#1C1917" }}>{tool.name}</h3>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: tool.color }}>{fmt(tool.cost)}</span>
+                        </div>
+                        <div style={{ fontSize: 11, color: "#6B7280", fontStyle: "italic", marginBottom: 12 }}>{tool.purpose}</div>
+                        <p style={{ fontSize: 12, color: "#374151", lineHeight: 1.6, marginBottom: 12 }}>{tool.description}</p>
+                        <div style={{ fontSize: 10, fontFamily: "monospace", color: "#DC2626", marginBottom: 6, textTransform: "uppercase" }}>Gaps</div>
+                        {tool.limitations.map((l, i) => (
+                          <div key={i} style={{ fontSize: 12, color: "#374151", lineHeight: 1.5, marginBottom: 4, paddingLeft: 10, borderLeft: "2px solid #FEE2E2" }}>{l}</div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Arrow */}
+                <div style={{ textAlign: "center", fontSize: 22, color: "#7C3AED", lineHeight: 1 }}>↓</div>
+
+                {/* Titan */}
+                <div>
+                  <div style={{ fontSize: 11, fontFamily: "monospace", letterSpacing: "0.1em", color: "#7C3AED", textTransform: "uppercase", marginBottom: 12 }}>
+                    Proposed Replacement — 1 Vendor · {fmt(data.titan.cost)}/yr
+                  </div>
+                  <div style={{
+                    background: "#fff", border: "2px solid #7C3AED",
+                    borderLeft: "4px solid #7C3AED",
+                    borderRadius: 8, padding: 22,
+                    boxShadow: "0 2px 12px rgba(124,58,237,0.1)",
+                  }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 10 }}>
+                      <div>
+                        <h3 style={{ fontSize: 20, fontWeight: 700, color: "#7C3AED", marginBottom: 4 }}>Titan</h3>
+                        <div style={{ fontSize: 12, color: "#6B7280", fontStyle: "italic" }}>{data.titan.tagline}</div>
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <div style={{ fontSize: 22, fontWeight: 700, color: "#7C3AED" }}>{fmt(data.titan.cost)}/yr</div>
+                        <div style={{ fontSize: 11, color: "#059669", fontFamily: "monospace" }}>Save {fmt(savings)} vs. current stack</div>
+                      </div>
+                    </div>
+                    <p style={{ fontSize: 13, color: "#374151", lineHeight: 1.7, borderLeft: "3px solid #E5E7EB", paddingLeft: 14, marginBottom: 16 }}>{data.titan.description}</p>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                      <div>
+                        <div style={{ fontSize: 10, fontFamily: "monospace", letterSpacing: "0.08em", color: "#7C3AED", marginBottom: 8, textTransform: "uppercase" }}>Plan Inclusions</div>
+                        {data.titan.inclusions.map((inc, i) => (
+                          <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#374151", marginBottom: 6, paddingBottom: 6, borderBottom: "1px solid #F3F4F6" }}>
+                            <span style={{ color: "#6B7280" }}>{inc.label}</span>
+                            <span style={{ fontWeight: 600 }}>{inc.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 10, fontFamily: "monospace", letterSpacing: "0.08em", color: "#059669", marginBottom: 8, textTransform: "uppercase" }}>What It Replaces & Adds</div>
+                        {data.titan.capabilities.map((c, i) => (
+                          <div key={i} style={{ fontSize: 12, color: "#374151", lineHeight: 1.5, marginBottom: 5, paddingLeft: 10, borderLeft: "2px solid #D1FAE5" }}>{c}</div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* COST */}
+            {activeTab === "cost" && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
+                  <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 8, padding: 20, textAlign: "center" }}>
+                    <div style={{ fontSize: 11, fontFamily: "monospace", color: "#6B7280", textTransform: "uppercase", marginBottom: 8 }}>Current Stack Total</div>
+                    <div style={{ fontSize: 32, fontWeight: 700, color: "#DC2626" }}>{fmt(currentTotal)}</div>
+                    <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 4 }}>per year · 3 vendors</div>
+                  </div>
+                  <div style={{ background: "#fff", border: "2px solid #7C3AED", borderRadius: 8, padding: 20, textAlign: "center" }}>
+                    <div style={{ fontSize: 11, fontFamily: "monospace", color: "#7C3AED", textTransform: "uppercase", marginBottom: 8 }}>Titan Total</div>
+                    <div style={{ fontSize: 32, fontWeight: 700, color: "#7C3AED" }}>{fmt(data.titan.cost)}</div>
+                    <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 4 }}>per year · 1 vendor</div>
+                  </div>
+                  <div style={{ background: "#F0FDF4", border: "1px solid #BBF7D0", borderRadius: 8, padding: 20, textAlign: "center" }}>
+                    <div style={{ fontSize: 11, fontFamily: "monospace", color: "#166534", textTransform: "uppercase", marginBottom: 8 }}>Annual Savings</div>
+                    <div style={{ fontSize: 32, fontWeight: 700, color: "#059669" }}>{fmt(savings)}</div>
+                    <div style={{ fontSize: 11, color: "#166534", marginTop: 4 }}>cost-neutral consolidation</div>
+                  </div>
+                </div>
+
+                <table style={{ width: "100%", borderCollapse: "collapse", background: "#fff", borderRadius: 8, overflow: "hidden", border: "1px solid #E5E7EB", fontSize: 13 }}>
+                  <thead>
+                    <tr style={{ background: "#1C1917" }}>
+                      <th style={{ padding: "12px 18px", textAlign: "left", color: "#9CA3AF", fontWeight: 400, fontFamily: "monospace", fontSize: 10, letterSpacing: "0.1em" }}>TOOL</th>
+                      <th style={{ padding: "12px 14px", textAlign: "left", color: "#9CA3AF", fontWeight: 400, fontFamily: "monospace", fontSize: 10 }}>PURPOSE</th>
+                      <th style={{ padding: "12px 18px", textAlign: "right", color: "#9CA3AF", fontWeight: 400, fontFamily: "monospace", fontSize: 10 }}>ANNUAL COST</th>
+                      <th style={{ padding: "12px 14px", textAlign: "center", color: "#9CA3AF", fontWeight: 400, fontFamily: "monospace", fontSize: 10 }}>SF NATIVE</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.currentStack.map((tool, i) => (
+                      <tr key={tool.id} style={{ borderTop: "1px solid #F3F4F6", background: i % 2 === 0 ? "#fff" : "#FAFAFA" }}>
+                        <td style={{ padding: "12px 18px" }}>
+                          <span style={{ display: "inline-block", width: 10, height: 10, borderRadius: "50%", background: tool.color, marginRight: 8 }} />
+                          <strong>{tool.name}</strong>
+                        </td>
+                        <td style={{ padding: "12px 14px", color: "#6B7280", fontSize: 12 }}>{tool.purpose}</td>
+                        <td style={{ padding: "12px 18px", textAlign: "right", fontWeight: 600, color: "#DC2626" }}>{fmt(tool.cost)}</td>
+                        <td style={{ padding: "12px 14px", textAlign: "center" }}><span style={{ color: "#D1D5DB", fontWeight: 700, fontSize: 16 }}>✗</span></td>
+                      </tr>
+                    ))}
+                    <tr style={{ borderTop: "2px solid #E5E7EB", background: "#FEF2F2" }}>
+                      <td colSpan={2} style={{ padding: "12px 18px", fontWeight: 700, fontFamily: "monospace", fontSize: 11, textTransform: "uppercase", color: "#374151" }}>Current Stack Total</td>
+                      <td style={{ padding: "12px 18px", textAlign: "right", fontWeight: 700, color: "#DC2626" }}>{fmt(currentTotal)}</td>
+                      <td />
+                    </tr>
+                    <tr style={{ borderTop: "2px solid #DDD6FE", background: "#F5F3FF" }}>
+                      <td style={{ padding: "14px 18px" }}>
+                        <span style={{ display: "inline-block", width: 10, height: 10, borderRadius: "50%", background: "#7C3AED", marginRight: 8 }} />
+                        <strong style={{ color: "#7C3AED" }}>Titan</strong>
+                      </td>
+                      <td style={{ padding: "14px 14px", color: "#6B7280", fontSize: 12 }}>eSign · Doc Gen · Portal · Forms</td>
+                      <td style={{ padding: "14px 18px", textAlign: "right", fontWeight: 700, color: "#7C3AED" }}>{fmt(data.titan.cost)}</td>
+                      <td style={{ padding: "14px 14px", textAlign: "center" }}><span style={{ color: "#059669", fontWeight: 700, fontSize: 16 }}>✓</span></td>
+                    </tr>
+                    <tr style={{ borderTop: "2px solid #BBF7D0", background: "#F0FDF4" }}>
+                      <td colSpan={2} style={{ padding: "12px 18px", fontWeight: 700, fontFamily: "monospace", fontSize: 11, textTransform: "uppercase", color: "#166534" }}>Annual Savings</td>
+                      <td style={{ padding: "12px 18px", textAlign: "right", fontWeight: 700, color: "#059669" }}>+{fmt(savings)}</td>
+                      <td />
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: 8, padding: "14px 18px", fontSize: 13, color: "#92400E", lineHeight: 1.6 }}>
+                  <strong>Note on Jotform:</strong> The $1,548/yr Jotform cost applies only if the selected Titan plan includes a Forms module. If it does, Jotform is eliminated entirely. If not, Jotform remains as a line item — adjust the comparison accordingly.
+                </div>
+              </div>
+            )}
+
+            {/* FEATURES */}
+            {activeTab === "features" && (
+              <div>
+                <table style={{ width: "100%", borderCollapse: "collapse", background: "#fff", borderRadius: 8, overflow: "hidden", border: "1px solid #E5E7EB", fontSize: 13 }}>
+                  <thead>
+                    <tr style={{ background: "#1C1917" }}>
+                      <th style={{ padding: "12px 18px", textAlign: "left", color: "#9CA3AF", fontWeight: 400, fontFamily: "monospace", fontSize: 10, letterSpacing: "0.1em", width: "36%" }}>CAPABILITY</th>
+                      <th style={{ padding: "12px 12px", textAlign: "center", color: "#0F9D58", fontWeight: 700, fontSize: 11 }}>HelloSign</th>
+                      <th style={{ padding: "12px 12px", textAlign: "center", color: "#F4B400", fontWeight: 700, fontSize: 11 }}>HONA</th>
+                      <th style={{ padding: "12px 12px", textAlign: "center", color: "#DB4437", fontWeight: 700, fontSize: 11 }}>Jotform</th>
+                      <th style={{ padding: "12px 12px", textAlign: "center", color: "#A78BFA", fontWeight: 700, fontSize: 12 }}>Titan</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.features.map((cat, ci) => (
+                      <>
+                        <tr key={`cat-${ci}`} style={{ background: "#F9FAFB", cursor: "pointer" }} onClick={() => setExpandedCat(expandedCat === ci ? null : ci)}>
+                          <td colSpan={5} style={{ padding: "9px 18px", fontWeight: 700, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "#374151", fontFamily: "monospace" }}>
+                            {expandedCat === ci ? "▾" : "▸"} {cat.category}
+                          </td>
+                        </tr>
+                        {(expandedCat === null || expandedCat === ci) && cat.items.map((item, ii) => (
+                          <tr key={`item-${ci}-${ii}`} style={{ borderTop: "1px solid #F3F4F6", background: ii % 2 === 0 ? "#fff" : "#FAFAFA" }}>
+                            <td style={{ padding: "10px 18px", color: "#374151" }}>{item.name}</td>
+                            <td style={{ padding: "10px 12px", textAlign: "center" }}>{renderBool(item.hellosign)}</td>
+                            <td style={{ padding: "10px 12px", textAlign: "center" }}>{renderBool(item.hona)}</td>
+                            <td style={{ padding: "10px 12px", textAlign: "center" }}>{renderBool(item.jotform)}</td>
+                            <td style={{ padding: "10px 12px", textAlign: "center" }}>{renderBool(item.titan)}</td>
+                          </tr>
+                        ))}
+                      </>
+                    ))}
+                  </tbody>
+                </table>
+                <div style={{ fontSize: 12, color: "#6B7280", fontFamily: "monospace", marginTop: 10 }}>
+                  Click a category row to isolate · <span style={{ color: "#059669", fontWeight: 700 }}>✓</span> Available &nbsp; <span style={{ color: "#D1D5DB", fontWeight: 700 }}>✗</span> Not Available
+                </div>
+              </div>
+            )}
+
+            {/* ADDED CAPABILITIES */}
+            {activeTab === "added" && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+
+                {/* Onboarding spotlight */}
+                <div style={{ background: "#FEF2F2", border: "2px solid #FECACA", borderLeft: "4px solid #DC2626", borderRadius: 8, padding: 22, marginBottom: 8 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                    <span style={{ fontSize: 10, fontFamily: "monospace", background: "#DC2626", color: "#fff", padding: "3px 10px", borderRadius: 4, textTransform: "uppercase" }}>Critical Gap Solved</span>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: "#1C1917" }}>{data.onboarding.headline}</span>
+                  </div>
+                  <p style={{ fontSize: 13, color: "#374151", lineHeight: 1.7, borderLeft: "3px solid #FECACA", paddingLeft: 14, marginBottom: 16 }}>{data.onboarding.body}</p>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                    {data.onboarding.steps.map((step, i) => (
+                      <div key={i} style={{ background: "#fff", border: "1px solid #FECACA", borderRadius: 6, padding: "12px 14px", display: "flex", gap: 12, alignItems: "flex-start" }}>
+                        <span style={{ fontSize: 18, color: "#DC2626", flexShrink: 0, lineHeight: 1 }}>{step.icon}</span>
+                        <div>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: "#1C1917", marginBottom: 3 }}>{step.label}</div>
+                          <div style={{ fontSize: 12, color: "#6B7280", lineHeight: 1.5 }}>{step.detail}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ background: "#F5F3FF", border: "1px solid #DDD6FE", borderRadius: 8, padding: "14px 18px", fontSize: 13, color: "#5B21B6", lineHeight: 1.6, marginBottom: 4 }}>
+                  <strong>Beyond replacement:</strong> Titan doesn't just replicate what HelloSign, HONA, and Jotform do today — it adds capabilities the current stack cannot support at all. Every item below is net-new functionality that Titan unlocks inside Salesforce.
+                </div>
+                {data.added.map((item, i) => (
+                  <div key={i} style={{
+                    display: "flex", alignItems: "flex-start", gap: 14,
+                    background: "#fff", border: `1px solid ${impactColors[item.impact]?.border}`,
+                    borderLeft: `3px solid ${impactColors[item.impact]?.text}`,
+                    borderRadius: 6, padding: "14px 18px",
+                  }}>
+                    <span style={{
+                      fontSize: 10, fontFamily: "monospace", whiteSpace: "nowrap",
+                      background: impactColors[item.impact]?.bg,
+                      color: impactColors[item.impact]?.text,
+                      padding: "3px 10px", borderRadius: 4, minWidth: 60, textAlign: "center",
+                    }}>{item.impact}</span>
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: "#1C1917", marginBottom: 3 }}>{item.capability}</div>
+                      <div style={{ fontSize: 12, color: "#6B7280", fontStyle: "italic" }}>{item.note}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* MIGRATION */}
+            {activeTab === "migration" && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {[
+                    {
+                      phase: "Week 1–2", label: "Setup & Config", color: "#7C3AED",
+                      items: [
+                        "Provision Titan org and connect to Salesforce instance",
+                        "Configure user accounts — 1 Admin, 2 Editors, 10 Doc Gen users",
+                        "Import existing document templates (up to 150)",
+                        "Map Salesforce object fields for merge / generation",
+                      ],
+                    },
+                    {
+                      phase: "Week 3–4", label: "eSignature Cutover", color: "#0070D2",
+                      items: [
+                        "Recreate HelloSign signing workflows in Titan",
+                        "Test signature triggers from Salesforce matter records",
+                        "Validate signed documents attach to correct SF records",
+                        "Run parallel with HelloSign for 1 week — then cut over",
+                      ],
+                    },
+                    {
+                      phase: "Week 4–6", label: "Portal & Forms Cutover", color: "#0F9D58",
+                      items: [
+                        "Build client portal in Titan — mirror current HONA structure",
+                        "Migrate public intake forms from Jotform to Titan Forms",
+                        "Validate form submissions write correctly to Salesforce records",
+                        "Notify clients of new portal URL — deprecate HONA access",
+                      ],
+                    },
+                    {
+                      phase: "Week 6–8", label: "Document Generation", color: "#D97706",
+                      items: [
+                        "Build document generation workflows from Salesforce data",
+                        "Test merge field accuracy against live matter records",
+                        "Train staff on Titan document generation",
+                        "Cancel HelloSign, HONA, and Jotform subscriptions",
+                      ],
+                    },
+                  ].map((phase, i) => (
+                    <div key={i} style={{ display: "flex", gap: 20, position: "relative" }}>
+                      <div style={{ width: 80, textAlign: "right", flexShrink: 0, paddingTop: 2 }}>
+                        <div style={{ fontSize: 10, fontFamily: "monospace", color: "#9CA3AF" }}>{phase.phase}</div>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: "#374151", marginTop: 2 }}>{phase.label}</div>
+                      </div>
+                      <div style={{
+                        width: 24, height: 24, borderRadius: "50%", background: phase.color,
+                        flexShrink: 0, marginTop: 2, display: "flex", alignItems: "center", justifyContent: "center",
+                        color: "#fff", fontSize: 11, fontWeight: 700,
+                      }}>{i + 1}</div>
+                      <div style={{ flex: 1 }}>
+                        {phase.items.map((item, j) => (
+                          <div key={j} style={{
+                            background: "#fff", border: "1px solid #E5E7EB", borderRadius: 6,
+                            padding: "10px 16px", marginBottom: 8, fontSize: 13, color: "#374151", lineHeight: 1.5,
+                          }}>{item}</div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ background: "#F0FDF4", border: "1px solid #BBF7D0", borderRadius: 8, padding: "14px 18px" }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: "#166534", marginBottom: 4 }}>Expected Outcome</div>
+                  <div style={{ fontSize: 13, color: "#14532D", lineHeight: 1.6 }}>
+                    Full cutover in approximately 8 weeks. Three vendor contracts cancelled. One Salesforce-native platform in place.
+                    Net savings of {fmt(savings)}/yr with significant added capabilities — including document generation, automated SF record updates from signatures and form submissions, and a unified audit trail across all client interactions.
+                  </div>
+                </div>
+              </div>
+            )}
+
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
